@@ -1,0 +1,93 @@
+Sub stock()
+
+Dim row_count, iterator, row_number As Integer
+Dim ticker As String
+Dim open_price, close_price, yearly_change As Double
+Dim max_inc, max_dec, max_total As Double
+Dim max_inc_ticker, max_dec_ticker, max_total_ticker As String
+  
+    
+For Each ws In Worksheets
+    ws.Cells(1, "I").Value = "Ticker"
+    ws.Cells(1, "J").Value = "Yearly Change"
+    ws.Cells(1, "K").Value = "Percent Change"
+    ws.Cells(1, "L").Value = "Total Stock volume"
+    ws.Cells(2, "N") = "Greatest Percent Increase"
+    ws.Cells(3, "N") = "Greatest Percent Decrease"
+    ws.Cells(4, "N") = "Greatest Total Volume"
+    ws.Cells(1, "O").Value = "Ticker"
+    ws.Cells(1, "P").Value = "Value"
+    
+    
+row_count = ws.Cells(Rows.Count, 1).End(xlUp).Row
+
+
+row_number = 2
+open_price = ws.Cells(2, "C")
+yearly_change = 0
+percent_change = 0
+max_inc = 0
+max_dec = 0
+max_total = 0
+
+For i = 2 To row_count
+
+    If ws.Cells(i, "A") <> ws.Cells(i + 1, "A") Then
+    
+        ticker = ws.Cells(i, "A")
+        ws.Cells(row_number, "I") = ticker
+        
+        close_price = ws.Cells(i, "F")
+        yearly_change = close_price - open_price
+        ws.Cells(row_number, "J") = yearly_change
+        
+        If yearly_change > 0 Then
+            ws.Cells(row_number, "J").Interior.ColorIndex = 4
+            Else
+            ws.Cells(row_number, "J").Interior.ColorIndex = 3
+        End If
+        
+        percent_change = yearly_change / open_price
+        ws.Cells(row_number, "K") = FormatPercent(percent_change)
+    
+    
+        If ws.Cells(row_number, "K") > max_inc Then
+            max_inc = ws.Cells(row_number, "K")
+            max_inc_ticker = ticker
+        End If
+        
+        If ws.Cells(row_number, "K") < max_dec Then
+        max_dec = ws.Cells(row_number, "K")
+        max_dec_ticker = ticker
+        End If
+        
+        If ws.Cells(row_number, "L") > max_total Then
+            max_total = ws.Cells(row_number, "L")
+            max_total_ticker = ticker
+        End If
+        
+        open_price = ws.Cells(i + 1, "C")
+        row_number = row_number + 1
+        
+    
+    End If
+
+    If ws.Cells(i, "A") = ws.Cells(i + 1, "A") Then
+       total_volume = total_volume + ws.Cells(i, "G")
+       ws.Cells(row_number, "L") = total_volume + ws.Cells(i + 1, "G")
+    Else
+        total_volume = 0
+    End If
+    
+Next i
+
+    ws.Cells(2, "O") = max_inc_ticker
+    ws.Cells(2, "P") = FormatPercent(max_inc)
+    ws.Cells(3, "O") = max_dec_ticker
+    ws.Cells(3, "P") = FormatPercent(max_dec)
+    ws.Cells(4, "O") = max_total_ticker
+    ws.Cells(4, "P") = max_total
+Next ws
+
+
+End Sub
