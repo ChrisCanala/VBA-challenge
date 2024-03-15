@@ -50,11 +50,6 @@ For i = 2 To row_count
         percent_change = yearly_change / open_price
         ws.Cells(row_number, "K") = FormatPercent(percent_change)
     
-    
-        If ws.Cells(row_number, "K") > max_inc Then
-            max_inc = ws.Cells(row_number, "K")
-            max_inc_ticker = ticker
-        End If
         
         If ws.Cells(row_number, "K") < max_dec Then
         max_dec = ws.Cells(row_number, "K")
@@ -64,6 +59,12 @@ For i = 2 To row_count
         If ws.Cells(row_number, "L") > max_total Then
             max_total = ws.Cells(row_number, "L")
             max_total_ticker = ticker
+        End If
+        
+        
+        If ws.Cells(row_number, "K") > max_inc Then
+            max_inc = ws.Cells(row_number, "K")
+            max_inc_ticker = ticker
         End If
         
         open_price = ws.Cells(i + 1, "C")
